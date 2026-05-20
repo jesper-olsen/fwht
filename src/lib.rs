@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Sub, Div};
 
 /// Computes the in-place Fast Walsh-Hadamard Transform (FWHT).
 ///
@@ -76,8 +76,71 @@ where
                 x[j + h] = a - b;
             }
         }
-
         h *= 2;
+    }
+}
+
+//pub fn fwht<T>(x: &mut [T])
+//where
+//    T: Add<Output = T> + Sub<Output = T> + Copy,
+//{
+//    let n = x.len();
+//    debug_assert!(n.is_power_of_two(), "Input length must be a power of two");
+//    let mut h = 1;
+//
+//    while h < n {
+//        for i in (0..n).step_by(h * 2) {
+//            for j in i..i + h {
+//                // SAFETY: `i` ranges from 0 to n-1 in steps of 2h.
+//                // `j` ranges from i to i + h - 1.
+//                // The maximum index accessed is `j + h`, which equals `i + 2h - 1`.
+//                // Since `i + 2h` is bounded by `n`, `j + h` is strictly less than `n`.
+//                unsafe {
+//                    let a = *x.get_unchecked(j);
+//                    let b = *x.get_unchecked(j + h);
+//
+//                    *x.get_unchecked_mut(j) = a + b;
+//                    *x.get_unchecked_mut(j + h) = a - b;
+//                }
+//            }
+//        }
+//        h *= 2;
+//    }
+//}
+
+// iterators - may avoids bounds checks
+//pub fn fwht<T>(x: &mut [T])
+//where
+//    T: Add<Output = T> + Sub<Output = T> + Copy,
+//{
+//    let n = x.len();
+//    assert!(n.is_power_of_two(), "Input length must be a power of two");
+//    let mut h = 1;
+//
+//    while h < n {
+//        for chunk in x.chunks_exact_mut(h * 2) {
+//            let (left, right) = chunk.split_at_mut(h);
+//            for j in 0..h {
+//                let a = left[j];
+//                let b = right[j];
+//                left[j] = a + b;
+//                right[j] = a - b;
+//            }
+//        }
+//        h *= 2;
+//    }
+//}
+
+
+pub fn ifwht<T>(x: &mut [T])
+where
+    T: Add<Output = T> + Sub<Output = T> + Div<Output = T> + Copy + TryFrom<usize>,
+    <T as TryFrom<usize>>::Error: std::fmt::Debug,
+{
+    fwht(x);
+    let n_val = T::try_from(x.len()).expect("Slice length exceeds type capacity");
+    for val in x.iter_mut() {
+        *val = *val / n_val;
     }
 }
 
