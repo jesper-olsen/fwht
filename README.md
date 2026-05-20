@@ -48,6 +48,9 @@ cargo run --example matrix_visualizer
 gnuplot visualize.gp
 ```
 
+![PNG Image of FWHT matrices](fwht_matrices.png)
+
+
 ## Algorithm Notes
 
 The transform is computed iteratively using butterfly operations:a, b -> a + b, a - b
