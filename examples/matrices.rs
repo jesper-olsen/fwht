@@ -1,4 +1,4 @@
-// examples/matrix_visualizer.rs
+// examples/matrices.rs
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use fwht::fwht; // Assuming this is your crate
@@ -54,7 +54,7 @@ fn write_matrix(filename: &str, matrix: &[Vec<i32>]) -> std::io::Result<()> {
     for row in matrix {
         for (i, val) in row.iter().enumerate() {
             if i > 0 { write!(writer, " ")?; }
-            write!(writer, "{}", val)?;
+            write!(writer, "{val}")?;
         }
         writeln!(writer)?;
     }
